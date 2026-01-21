@@ -74,7 +74,10 @@ def main(args:list[str]):
     promt = """
     Give me a short and direct answer to the question:
         """ + " ".join(args[1:])
-    print(ask_ollama(promt, model=use_model))
+    answer = ask_ollama(promt, model=use_model)
+    if "<think>" in answer:
+        answer = answer.split("<think>")[-1]
+    print(answer)
     return 0 
 
 if __name__ == "__main__":
