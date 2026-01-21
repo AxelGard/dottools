@@ -4,6 +4,7 @@ import http.client
 import json
 import subprocess
 
+
 def get_ollama_models():
     """
     Returns a list of installed Ollama model names.
@@ -43,11 +44,7 @@ def ask_ollama(question: str, model: str = "llama3.2:1b") -> str:
     """
     conn = http.client.HTTPConnection("localhost", 11434)
 
-    payload = json.dumps({
-        "model": model,
-        "prompt": question,
-        "stream": False
-    })
+    payload = json.dumps({"model": model, "prompt": question, "stream": False})
 
     headers = {"Content-Type": "application/json"}
 
@@ -63,7 +60,8 @@ def ask_ollama(question: str, model: str = "llama3.2:1b") -> str:
     result = json.loads(data)
     return result.get("response", "")
 
-def main(args:list[str]):
+
+def main(args: list[str]):
     assert len(args) > 2, "bad usage, ask <model> <promt>"
     model = args[0]
     installed_models = get_ollama_models()
@@ -73,12 +71,15 @@ def main(args:list[str]):
             use_model = m
     promt = """
     Give me a short and direct answer to the question:
-        """ + " ".join(args[1:])
+        """ + " ".join(
+        args[1:]
+    )
     answer = ask_ollama(promt, model=use_model)
     if "<think>" in answer:
         answer = answer.split("<think>")[-1]
     print(answer)
-    return 0 
+    return 0
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
